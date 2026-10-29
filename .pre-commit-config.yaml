@@ -37,6 +37,7 @@ repos:
         require_serial: true
         language: unsupported
         types: [python]
+        exclude: ^qa/
 
       - id: local-ruff-format
         name: ruff format
@@ -44,6 +45,32 @@ repos:
         require_serial: true
         language: unsupported
         types_or: [python, markdown]
+        exclude: ^qa/
+
+      # qa/ is a standalone uv project with its own ruff and mypy versions and settings
+      - id: qa-ruff-check
+        name: qa ruff check
+        entry: uv run --locked --project qa ruff check --force-exclude --fix --exit-non-zero-on-fix
+        require_serial: true
+        language: unsupported
+        types: [python]
+        files: ^qa/
+
+      - id: qa-ruff-format
+        name: qa ruff format
+        entry: uv run --locked --project qa ruff format --force-exclude --exit-non-zero-on-format
+        require_serial: true
+        language: unsupported
+        types_or: [python, markdown]
+        files: ^qa/
+
+      - id: qa-mypy
+        name: qa mypy check
+        entry: uv run --locked --directory qa mypy
+        require_serial: true
+        language: unsupported
+        pass_filenames: false
+        files: ^qa/(.*\.py|pyproject\.toml|uv\.lock)$
 
       - id: local-mypy
         name: mypy check
@@ -65,13 +92,6 @@ repos:
         pass_filenames: false
         language: unsupported
         files: ^backend/app/.*\.py$|^backend/pyproject\.toml$|^uv\.lock$|^frontend/openapi-ts\.config\.ts$|^scripts/generate-client\.sh$
-
-      - id: add-release-date
-        language: unsupported
-        name: add date to latest release header
-        entry: uv run python scripts/add_latest_release_date.py
-        files: ^release-notes\.md$
-        pass_filenames: false
 
       - id: zizmor
         name: zizmor
