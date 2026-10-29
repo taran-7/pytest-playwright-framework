@@ -1,0 +1,47 @@
+name: Test QA
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - qa/**
+      - .github/workflows/test-qa.yml
+  pull_request:
+    paths:
+      - qa/**
+      - .github/workflows/test-qa.yml
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  test-qa:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: qa
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup uv
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: "latest-known"
+          cache-dependency-glob: qa/uv.lock
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Lint
+        run: uv run ruff check .
+      - name: Check formatting
+        run: uv run ruff format --check .
+      - name: Check types
+        run: uv run mypy
+      - name: Install Chromium
+        run: uv run playwright install --with-deps chromium
+      - name: Run self tests
+        run: uv run pytest
