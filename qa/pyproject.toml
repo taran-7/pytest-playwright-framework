@@ -1,0 +1,20 @@
+[project]
+name = "qa"
+version = "0.1.0"
+requires-python = ">=3.15"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-playwright>=0.10.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--strict-markers"]
+base_url = "http://localhost:8000"
+markers = [
+    "smoke: fast checks run on every PR",
+    "regression: full regression suite",
+]
