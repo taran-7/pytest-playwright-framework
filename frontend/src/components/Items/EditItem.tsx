@@ -78,13 +78,14 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuItem
+        data-testid="edit-item-button"
         onSelect={(e) => e.preventDefault()}
         onClick={() => setIsOpen(true)}
       >
         <Pencil />
         Edit Item
       </DropdownMenuItem>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" data-testid="edit-item-dialog">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader>
@@ -103,7 +104,12 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
                       Title <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="Title" type="text" {...field} />
+                      <Input
+                        data-testid="item-title-input"
+                        placeholder="Title"
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -117,7 +123,12 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input placeholder="Description" type="text" {...field} />
+                      <Input
+                        data-testid="item-description-input"
+                        placeholder="Description"
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -127,11 +138,19 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
 
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline" disabled={mutation.isPending}>
+                <Button
+                  variant="outline"
+                  disabled={mutation.isPending}
+                  data-testid="edit-item-cancel-button"
+                >
                   Cancel
                 </Button>
               </DialogClose>
-              <LoadingButton type="submit" loading={mutation.isPending}>
+              <LoadingButton
+                type="submit"
+                loading={mutation.isPending}
+                data-testid="edit-item-submit-button"
+              >
                 Save
               </LoadingButton>
             </DialogFooter>

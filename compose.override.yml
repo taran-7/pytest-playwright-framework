@@ -62,6 +62,7 @@ services:
       - ./backend/htmlcov:/app/backend/htmlcov
     environment:
       FASTAPI_ENV: "development"
+      SEED_USER_PASSWORD: ${SEED_USER_PASSWORD:-}
       SMTP_HOST: "mailpit"
       SMTP_PORT: "1025"
       SMTP_TLS: "false"

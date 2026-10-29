@@ -33,7 +33,10 @@ function ItemsTableContent() {
 
   if (items.data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center text-center py-12">
+      <div
+        className="flex flex-col items-center justify-center text-center py-12"
+        data-testid="items-empty-state"
+      >
         <div className="rounded-full bg-muted p-4 mb-4">
           <Search className="h-8 w-8 text-muted-foreground" />
         </div>

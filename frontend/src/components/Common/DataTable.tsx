@@ -55,7 +55,7 @@ export function DataTable<TData extends RowData>({
 
   return (
     <div className="flex flex-col gap-4">
-      <Table>
+      <Table data-testid="data-table">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">
@@ -77,7 +77,7 @@ export function DataTable<TData extends RowData>({
         <TableBody>
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
+              <TableRow key={row.id} data-testid="table-row">
                 {row.getAllCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -124,7 +124,10 @@ export function DataTable<TData extends RowData>({
                   table.setPageSize(Number(value))
                 }}
               >
-                <SelectTrigger className="h-8 w-[70px]">
+                <SelectTrigger
+                  className="h-8 w-[70px]"
+                  data-testid="page-size-select"
+                >
                   <SelectValue placeholder={table.state.pagination.pageSize} />
                 </SelectTrigger>
                 <SelectContent side="top">
@@ -155,6 +158,7 @@ export function DataTable<TData extends RowData>({
                 variant="outline"
                 size="sm"
                 className="h-8 w-8 p-0"
+                data-testid="pagination-first-button"
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
               >
@@ -165,6 +169,7 @@ export function DataTable<TData extends RowData>({
                 variant="outline"
                 size="sm"
                 className="h-8 w-8 p-0"
+                data-testid="pagination-previous-button"
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
               >
@@ -175,6 +180,7 @@ export function DataTable<TData extends RowData>({
                 variant="outline"
                 size="sm"
                 className="h-8 w-8 p-0"
+                data-testid="pagination-next-button"
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
               >
@@ -185,6 +191,7 @@ export function DataTable<TData extends RowData>({
                 variant="outline"
                 size="sm"
                 className="h-8 w-8 p-0"
+                data-testid="pagination-last-button"
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
               >

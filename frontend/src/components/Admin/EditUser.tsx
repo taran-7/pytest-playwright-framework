@@ -99,13 +99,14 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuItem
+        data-testid="edit-user-button"
         onSelect={(e) => e.preventDefault()}
         onClick={() => setIsOpen(true)}
       >
         <Pencil />
         Edit User
       </DropdownMenuItem>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" data-testid="edit-user-dialog">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader>
@@ -125,6 +126,7 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        data-testid="user-email-input"
                         placeholder="Email"
                         type="email"
                         {...field}
@@ -143,7 +145,12 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Full name" type="text" {...field} />
+                      <Input
+                        data-testid="user-full-name-input"
+                        placeholder="Full name"
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -158,6 +165,7 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                     <FormLabel>Set Password</FormLabel>
                     <FormControl>
                       <Input
+                        data-testid="user-password-input"
                         placeholder="Password"
                         type="password"
                         {...field}
@@ -176,6 +184,7 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
                       <Input
+                        data-testid="user-confirm-password-input"
                         placeholder="Password"
                         type="password"
                         {...field}
@@ -193,6 +202,7 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                   <FormItem className="flex items-center gap-3 space-y-0">
                     <FormControl>
                       <Checkbox
+                        data-testid="user-is-superuser-checkbox"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
@@ -209,6 +219,7 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                   <FormItem className="flex items-center gap-3 space-y-0">
                     <FormControl>
                       <Checkbox
+                        data-testid="user-is-active-checkbox"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
@@ -221,11 +232,19 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
 
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline" disabled={mutation.isPending}>
+                <Button
+                  variant="outline"
+                  disabled={mutation.isPending}
+                  data-testid="edit-user-cancel-button"
+                >
                   Cancel
                 </Button>
               </DialogClose>
-              <LoadingButton type="submit" loading={mutation.isPending}>
+              <LoadingButton
+                type="submit"
+                loading={mutation.isPending}
+                data-testid="edit-user-submit-button"
+              >
                 Save
               </LoadingButton>
             </DialogFooter>

@@ -21,11 +21,11 @@ export const ItemActionsMenu = ({ item }: ItemActionsMenuProps) => {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" data-testid="item-actions-button">
           <EllipsisVertical />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" data-testid="item-actions-menu">
         <EditItem item={item} onSuccess={() => setOpen(false)} />
         <DeleteItem id={item.id} onSuccess={() => setOpen(false)} />
       </DropdownMenuContent>

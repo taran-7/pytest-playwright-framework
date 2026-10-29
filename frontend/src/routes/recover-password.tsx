@@ -112,6 +112,7 @@ function RecoverPassword() {
               type="submit"
               className="w-full"
               loading={mutation.isPending}
+              data-testid="recover-submit-button"
             >
               Continue
             </LoadingButton>
@@ -119,7 +120,11 @@ function RecoverPassword() {
 
           <div className="text-center text-sm">
             Remember your password?{" "}
-            <RouterLink to="/login" className="underline underline-offset-4">
+            <RouterLink
+              to="/login"
+              className="underline underline-offset-4"
+              data-testid="login-link"
+            >
               Log in
             </RouterLink>
           </div>

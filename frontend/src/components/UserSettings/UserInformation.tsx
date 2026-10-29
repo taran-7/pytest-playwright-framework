@@ -96,7 +96,11 @@ const UserInformation = () => {
                 <FormItem>
                   <FormLabel>Full name</FormLabel>
                   <FormControl>
-                    <Input type="text" {...field} />
+                    <Input
+                      data-testid="profile-full-name-input"
+                      type="text"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -108,6 +112,7 @@ const UserInformation = () => {
                       "py-2 truncate max-w-sm",
                       !field.value && "text-muted-foreground",
                     )}
+                    data-testid="profile-full-name-value"
                   >
                     {field.value || "N/A"}
                   </p>
@@ -124,14 +129,23 @@ const UserInformation = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" {...field} />
+                    <Input
+                      data-testid="profile-email-input"
+                      type="email"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               ) : (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <p className="py-2 truncate max-w-sm">{field.value}</p>
+                  <p
+                    className="py-2 truncate max-w-sm"
+                    data-testid="profile-email-value"
+                  >
+                    {field.value}
+                  </p>
                 </FormItem>
               )
             }
@@ -144,6 +158,7 @@ const UserInformation = () => {
                   type="submit"
                   loading={mutation.isPending}
                   disabled={!form.formState.isDirty}
+                  data-testid="profile-save-button"
                 >
                   Save
                 </LoadingButton>
@@ -152,12 +167,17 @@ const UserInformation = () => {
                   variant="outline"
                   onClick={onCancel}
                   disabled={mutation.isPending}
+                  data-testid="profile-cancel-button"
                 >
                   Cancel
                 </Button>
               </>
             ) : (
-              <Button type="button" onClick={toggleEditMode}>
+              <Button
+                type="button"
+                onClick={toggleEditMode}
+                data-testid="profile-edit-button"
+              >
                 Edit
               </Button>
             )}

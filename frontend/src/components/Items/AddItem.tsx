@@ -72,12 +72,12 @@ const AddItem = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="my-4">
+        <Button className="my-4" data-testid="add-item-button">
           <Plus className="mr-2" />
           Add Item
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" data-testid="add-item-dialog">
         <DialogHeader>
           <DialogTitle>Add Item</DialogTitle>
           <DialogDescription>
@@ -97,6 +97,7 @@ const AddItem = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        data-testid="item-title-input"
                         placeholder="Title"
                         type="text"
                         {...field}
@@ -115,7 +116,12 @@ const AddItem = () => {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input placeholder="Description" type="text" {...field} />
+                      <Input
+                        data-testid="item-description-input"
+                        placeholder="Description"
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -125,11 +131,19 @@ const AddItem = () => {
 
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline" disabled={mutation.isPending}>
+                <Button
+                  variant="outline"
+                  disabled={mutation.isPending}
+                  data-testid="add-item-cancel-button"
+                >
                   Cancel
                 </Button>
               </DialogClose>
-              <LoadingButton type="submit" loading={mutation.isPending}>
+              <LoadingButton
+                type="submit"
+                loading={mutation.isPending}
+                data-testid="add-item-submit-button"
+              >
                 Save
               </LoadingButton>
             </DialogFooter>

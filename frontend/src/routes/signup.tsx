@@ -169,6 +169,7 @@ function SignUp() {
               type="submit"
               className="w-full"
               loading={signUpMutation.isPending}
+              data-testid="signup-submit-button"
             >
               Sign Up
             </LoadingButton>
@@ -176,7 +177,11 @@ function SignUp() {
 
           <div className="text-center text-sm">
             Already have an account?{" "}
-            <RouterLink to="/login" className="underline underline-offset-4">
+            <RouterLink
+              to="/login"
+              className="underline underline-offset-4"
+              data-testid="login-link"
+            >
               Log in
             </RouterLink>
           </div>
