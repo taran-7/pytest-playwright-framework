@@ -1,0 +1,51 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests",
+  ],
+  timezone: "Europe/Kyiv",
+  // One batch of updates per month, as in the Dependabot setup this replaces
+  schedule: ["before 6am on the first day of the month"],
+  // Do not take a release in its first week, so that broken ones can be yanked
+  minimumReleaseAge: "7 days",
+  labels: ["dependencies"],
+  assignees: ["taran-7"],
+  "pre-commit": {
+    enabled: true,
+  },
+  // Updated together with the generated frontend client, by hand
+  ignoreDeps: ["@hey-api/openapi-ts"],
+  packageRules: [
+    {
+      description: "Major updates wait for approval in the Dependency Dashboard",
+      matchUpdateTypes: ["major"],
+      dependencyDashboardApproval: true,
+    },
+    {
+      description: "@hey-api/openapi-ts does not work with TypeScript 7 yet",
+      matchPackageNames: ["typescript"],
+      allowedVersions: "<7",
+    },
+    {
+      groupName: "github-actions",
+      matchManagers: ["github-actions"],
+    },
+    {
+      groupName: "python packages",
+      matchDatasources: ["pypi"],
+    },
+    {
+      groupName: "npm packages",
+      matchManagers: ["npm"],
+    },
+    {
+      groupName: "docker",
+      matchManagers: ["dockerfile", "docker-compose"],
+    },
+    {
+      groupName: "pre-commit hooks",
+      matchManagers: ["pre-commit"],
+    },
+  ],
+}
