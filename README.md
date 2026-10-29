@@ -1,88 +1,85 @@
-# Full Stack FastAPI Template
+# pytest-playwright-framework
 
 [![Test Docker Compose](../../actions/workflows/test-docker-compose.yml/badge.svg)](../../actions/workflows/test-docker-compose.yml)
 [![Test Backend](../../actions/workflows/test-backend.yml/badge.svg)](../../actions/workflows/test-backend.yml)
+[![Test QA](../../actions/workflows/test-qa.yml/badge.svg)](../../actions/workflows/test-qa.yml)
 
-## Technology Stack and Features
+A training playground for test automation with Python and Playwright. A real web application is tested in layers (unit, component, API, UI, accessibility and performance), and each layer is a quality gate in CI.
 
-- ⚡ [**FastAPI**](https://fastapi.tiangolo.com) for the Python backend API.
-  - 🧰 [SQLModel](https://sqlmodel.tiangolo.com) for the Python SQL database interactions (ORM).
-  - 🔍 [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
-  - 💾 [PostgreSQL](https://www.postgresql.org) as the SQL database.
-- 🚀 [React](https://react.dev) for the frontend.
-  - 🧩 Built into the backend application and served by FastAPI on the same domain as the API.
-  - 💃 Using TypeScript, hooks, [Vite](https://vitejs.dev), and other parts of a modern frontend stack.
-  - 🎨 [Tailwind CSS](https://tailwindcss.com) and [shadcn/ui](https://ui.shadcn.com) for the frontend components.
-  - 🤖 An automatically generated frontend client.
-  - 🧪 [Playwright](https://playwright.dev) for end-to-end testing.
-  - 🦇 Dark mode support.
-- ☁️ [FastAPI Cloud](https://fastapicloud.com) for deployment.
-- 🐋 [Docker Compose](https://www.docker.com) for local services and self-hosted deployment.
-  - 📞 [Traefik](https://traefik.io) as a reverse proxy with automatic HTTPS.
-- 🔒 Secure password hashing by default.
-- 🔑 JWT (JSON Web Token) authentication.
-- 📫 Email-based password recovery.
-- ✉️ [React Email](https://react.email) for email templates.
-- 📬 [Mailpit](https://mailpit.axllent.org) for local email testing during development.
-- ✅ Tests with [Pytest](https://pytest.org).
-- 🏭 CI (continuous integration) and CD (continuous deployment) based on GitHub Actions.
+The application under test is a one-time import of [fastapi/full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template) (FastAPI, PostgreSQL, React). It is not kept in sync with upstream and may be changed freely to make it easier to test.
 
-### Dashboard Login
+## Repository layout
 
-![Dashboard login screenshot](img/login.png)
+| Path | What it is |
+|---|---|
+| `backend/`, `frontend/` | The system under test (SUT). It has stable `data-testid` attributes and a repeatable test data seeder. |
+| `qa/` | The test project: Python 3.15, uv, pytest and Playwright. It talks to the SUT only over HTTP and is configured with environment variables. |
+| `.github/` | CI workflows and the Renovate configuration. |
 
-### Dashboard - Admin
+## Quick start
 
-![Admin dashboard screenshot](img/dashboard.png)
+You need [Docker](https://docs.docker.com/get-docker/) and [uv](https://docs.astral.sh/uv/). uv downloads Python 3.15 by itself.
 
-### Dashboard - Items
+Start the SUT with the seeded test users on <http://localhost:8000>:
 
-![Items dashboard screenshot](img/dashboard-items.png)
+```bash
+docker compose run --rm backend bash scripts/prestart.sh
+docker compose run --rm backend python app/seed_test_data.py
+docker compose up -d --wait backend
+```
 
-### Dashboard - Dark Mode
+Install the browser once, then run the tests with one command:
 
-![Dark mode dashboard screenshot](img/dashboard-dark.png)
+```bash
+cd qa
+uv run playwright install chromium
+uv run pytest
+```
 
-### React Email Templates
+Stop the SUT with `docker compose down`, or `docker compose down -v` to also drop its database.
 
-![Email templates screenshot](img/react-email.png)
+## Configuration
 
-### Mailpit - Local Email Testing
+The tests are configured with environment variables. For local runs they can also be put in `qa/.env`, see `qa/.env.example`.
 
-![Mailpit screenshot](img/mailpit.png)
+| Variable | Default | Meaning |
+|---|---|---|
+| `QA_ENV` | `local` | Where the tests run: `local` or `ci`. |
+| `QA_BASE_URL` | `http://localhost:8000` | Origin of the SUT. The frontend and the API share it. |
 
-### Interactive API Documentation
+## Quality checks
 
-![API docs](img/docs.png)
+The `qa/` project is checked with Ruff (all rules), mypy in strict mode and pytest in strict mode (unknown markers and unexpected passes of `xfail` tests fail the run):
 
-## How to Use It
+```bash
+cd qa
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy
+uv run pytest
+```
 
-Click the **Use this template** button at the top of this page to create a new repository.
+The same checks run as pre-commit hooks. Install them once from the repository root with `uv run prek install -f`, see [development.md](./development.md#pre-commit-hooks-and-code-linting).
 
-## Backend Development
+## Continuous integration
 
-Backend docs: [backend/README.md](./backend/README.md).
+| Workflow | Runs on | What it checks |
+|---|---|---|
+| pre-commit | every pull request | The hooks for the SUT and for `qa/`. |
+| Test Backend | every pull request | The backend test suite. |
+| Test Docker Compose | every pull request | The stack builds, migrates, seeds and answers requests. |
+| Test QA | changes under `qa/` | Ruff, mypy and the self tests of `qa/`, including a Chromium run. |
+| Zizmor | every pull request | Security audit of the workflows. |
 
-## Frontend Development
+The `master` branch is protected by a ruleset: changes go through a pull request, and the checks `pre-commit-alls-green`, `test-backend`, `test-docker-compose` and `Run zizmor` must pass.
 
-Frontend docs: [frontend/README.md](./frontend/README.md).
+## More documentation
 
-## Deployment
-
-FastAPI Cloud deployment: [deployment.md](./deployment.md).
-
-Self-hosted deployment with Docker Compose: [deployment-docker-compose.md](./deployment-docker-compose.md).
-
-## Development
-
-General development docs: [development.md](./development.md).
-
-This includes the local FastAPI and Vite workflow, Docker Compose services, `.env` configuration, and more.
-
-## Release Notes
-
-Check the file [release-notes.md](./release-notes.md).
+- [development.md](./development.md): running and developing the SUT, including the test data seeder.
+- [backend/README.md](./backend/README.md) and [frontend/README.md](./frontend/README.md): the SUT parts.
+- [CONTRIBUTING.md](./CONTRIBUTING.md): how to propose changes.
+- [SECURITY.md](./SECURITY.md): how to report a vulnerability.
 
 ## License
 
-The Full Stack FastAPI Template is licensed under the terms of the MIT license.
+MIT, see [LICENSE](./LICENSE).
