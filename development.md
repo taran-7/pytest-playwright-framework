@@ -81,6 +81,16 @@ Stop a locally running FastAPI server before starting the Compose backend becaus
 
 [Mailpit](https://mailpit.axllent.org) captures emails sent during local development instead of delivering them. The local backend connects to it at `localhost:1025`, and the Compose backend connects to the `mailpit` service. Captured emails are available at <http://localhost:8025>.
 
+## Test Data
+
+`app/seed_test_data.py` creates a small, deterministic data set for automated tests: three users sharing the password from `SEED_USER_PASSWORD` (`qa.user@example.com` with 12 items, `qa.other@example.com` with 2 items, and the inactive `qa.inactive@example.com`). The superuser comes from `app/initial_data.py`.
+
+The command only runs when `FASTAPI_ENV=development`, can be repeated safely, and restores the password and flags of the seeded users if a test changed them:
+
+```bash
+docker compose run --rm backend python app/seed_test_data.py
+```
+
 ## Docker Compose Files and Environment Variables
 
 The main `compose.yml` file contains the configuration shared by the whole stack. Docker Compose loads it automatically.
