@@ -134,6 +134,7 @@ const ChangePassword = () => {
             type="submit"
             loading={mutation.isPending}
             className="self-start"
+            data-testid="change-password-submit-button"
           >
             Update Password
           </LoadingButton>

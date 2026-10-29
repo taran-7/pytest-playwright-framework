@@ -80,12 +80,15 @@ export function User({ user }: { user: any }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <RouterLink to="/settings" onClick={handleMenuClick}>
-              <DropdownMenuItem>
+              <DropdownMenuItem data-testid="user-settings-link">
                 <Settings />
                 User Settings
               </DropdownMenuItem>
             </RouterLink>
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem
+              onClick={handleLogout}
+              data-testid="logout-button"
+            >
               <LogOut />
               Log Out
             </DropdownMenuItem>

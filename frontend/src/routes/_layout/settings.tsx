@@ -45,7 +45,11 @@ function UserSettings() {
       <Tabs defaultValue="my-profile">
         <TabsList>
           {finalTabs.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value}>
+            <TabsTrigger
+              key={tab.value}
+              value={tab.value}
+              data-testid={`settings-tab-${tab.value}`}
+            >
               {tab.title}
             </TabsTrigger>
           ))}

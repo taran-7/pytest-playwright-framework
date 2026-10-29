@@ -108,6 +108,7 @@ function Login() {
                     <RouterLink
                       to="/recover-password"
                       className="ml-auto text-sm underline-offset-4 hover:underline"
+                      data-testid="forgot-password-link"
                     >
                       Forgot your password?
                     </RouterLink>
@@ -124,14 +125,22 @@ function Login() {
               )}
             />
 
-            <LoadingButton type="submit" loading={loginMutation.isPending}>
+            <LoadingButton
+              type="submit"
+              loading={loginMutation.isPending}
+              data-testid="login-submit-button"
+            >
               Log In
             </LoadingButton>
           </div>
 
           <div className="text-center text-sm">
             Don't have an account yet?{" "}
-            <RouterLink to="/signup" className="underline underline-offset-4">
+            <RouterLink
+              to="/signup"
+              className="underline underline-offset-4"
+              data-testid="signup-link"
+            >
               Sign up
             </RouterLink>
           </div>

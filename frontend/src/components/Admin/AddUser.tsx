@@ -91,12 +91,12 @@ const AddUser = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="my-4">
+        <Button className="my-4" data-testid="add-user-button">
           <Plus className="mr-2" />
           Add User
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" data-testid="add-user-dialog">
         <DialogHeader>
           <DialogTitle>Add User</DialogTitle>
           <DialogDescription>
@@ -116,6 +116,7 @@ const AddUser = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        data-testid="user-email-input"
                         placeholder="Email"
                         type="email"
                         {...field}
@@ -134,7 +135,12 @@ const AddUser = () => {
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Full name" type="text" {...field} />
+                      <Input
+                        data-testid="user-full-name-input"
+                        placeholder="Full name"
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -151,6 +157,7 @@ const AddUser = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        data-testid="user-password-input"
                         placeholder="Password"
                         type="password"
                         {...field}
@@ -173,6 +180,7 @@ const AddUser = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        data-testid="user-confirm-password-input"
                         placeholder="Password"
                         type="password"
                         {...field}
@@ -191,6 +199,7 @@ const AddUser = () => {
                   <FormItem className="flex items-center gap-3 space-y-0">
                     <FormControl>
                       <Checkbox
+                        data-testid="user-is-superuser-checkbox"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
@@ -207,6 +216,7 @@ const AddUser = () => {
                   <FormItem className="flex items-center gap-3 space-y-0">
                     <FormControl>
                       <Checkbox
+                        data-testid="user-is-active-checkbox"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
@@ -219,11 +229,19 @@ const AddUser = () => {
 
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline" disabled={mutation.isPending}>
+                <Button
+                  variant="outline"
+                  disabled={mutation.isPending}
+                  data-testid="add-user-cancel-button"
+                >
                   Cancel
                 </Button>
               </DialogClose>
-              <LoadingButton type="submit" loading={mutation.isPending}>
+              <LoadingButton
+                type="submit"
+                loading={mutation.isPending}
+                data-testid="add-user-submit-button"
+              >
                 Save
               </LoadingButton>
             </DialogFooter>

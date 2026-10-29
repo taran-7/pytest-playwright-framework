@@ -45,7 +45,11 @@ export function Main({ items }: MainProps) {
                   isActive={isActive}
                   asChild
                 >
-                  <RouterLink to={item.path} onClick={handleMenuClick}>
+                  <RouterLink
+                    to={item.path}
+                    onClick={handleMenuClick}
+                    data-testid={`nav-${item.title.toLowerCase()}-link`}
+                  >
                     <item.icon />
                     <span>{item.title}</span>
                   </RouterLink>

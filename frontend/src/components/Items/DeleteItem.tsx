@@ -54,6 +54,7 @@ const DeleteItem = ({ id, onSuccess }: DeleteItemProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuItem
+        data-testid="delete-item-button"
         variant="destructive"
         onSelect={(e) => e.preventDefault()}
         onClick={() => setIsOpen(true)}
@@ -61,7 +62,7 @@ const DeleteItem = ({ id, onSuccess }: DeleteItemProps) => {
         <Trash2 />
         Delete Item
       </DropdownMenuItem>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" data-testid="delete-item-dialog">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Delete Item</DialogTitle>
@@ -73,7 +74,11 @@ const DeleteItem = ({ id, onSuccess }: DeleteItemProps) => {
 
           <DialogFooter className="mt-4">
             <DialogClose asChild>
-              <Button variant="outline" disabled={mutation.isPending}>
+              <Button
+                variant="outline"
+                disabled={mutation.isPending}
+                data-testid="delete-item-cancel-button"
+              >
                 Cancel
               </Button>
             </DialogClose>
@@ -81,6 +86,7 @@ const DeleteItem = ({ id, onSuccess }: DeleteItemProps) => {
               variant="destructive"
               type="submit"
               loading={mutation.isPending}
+              data-testid="delete-item-confirm-button"
             >
               Delete
             </LoadingButton>
