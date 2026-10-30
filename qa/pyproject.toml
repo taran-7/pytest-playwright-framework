@@ -10,6 +10,7 @@ dependencies = [
 dev = [
     "mypy>=2.4.1",
     "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
     "pytest-playwright>=0.10.0",
     "ruff>=0.17.3",
 ]
@@ -24,6 +25,16 @@ markers = [
     "smoke: fast checks run on every PR",
     "regression: full regression suite",
 ]
+
+[tool.coverage.run]
+source = ["framework"]
+branch = true
+
+[tool.coverage.report]
+# The gate for the unit layer, applied by `pytest --cov`
+fail_under = 80
+show_missing = true
+skip_covered = true
 
 [tool.mypy]
 strict = true

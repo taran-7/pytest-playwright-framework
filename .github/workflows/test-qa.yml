@@ -43,5 +43,5 @@ jobs:
         run: uv run mypy
       - name: Install Chromium
         run: uv run playwright install --with-deps chromium
-      - name: Run self tests
-        run: uv run pytest
+      - name: Run self tests with the coverage gate
+        run: uv run pytest --cov
