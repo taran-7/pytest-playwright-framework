@@ -77,6 +77,18 @@ def test_seed_restores_drifted_user(db: Session) -> None:
     assert restored.full_name == "QA User"
 
 
+def test_main_seeds_the_test_data(db: Session, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(settings, "FASTAPI_ENV", "development")
+    monkeypatch.setattr(settings, "SEED_USER_PASSWORD", PASSWORD)
+
+    main()
+
+    for seed_user in SEED_USERS:
+        assert count_items(db, seed_user.email) == seed_user.item_count
+    user = crud.authenticate(session=db, email="qa.user@example.com", password=PASSWORD)
+    assert user is not None
+
+
 def test_main_refuses_outside_development(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(settings, "FASTAPI_ENV", None)
 

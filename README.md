@@ -56,8 +56,10 @@ cd qa
 uv run ruff check .
 uv run ruff format --check .
 uv run mypy
-uv run pytest
+uv run pytest --cov
 ```
+
+The unit layer has coverage gates: the backend needs at least 90% (`coverage report --fail-under=90` in CI) and `qa/framework` needs at least 80%. In `qa/` the gate applies when `--cov` is passed, so a run of a single test is not reported as a failure.
 
 The same checks run as pre-commit hooks. Install them once from the repository root with `uv run prek install -f`, see [development.md](./development.md#pre-commit-hooks-and-code-linting).
 
@@ -66,9 +68,9 @@ The same checks run as pre-commit hooks. Install them once from the repository r
 | Workflow | Runs on | What it checks |
 |---|---|---|
 | pre-commit | every pull request | The hooks for the SUT and for `qa/`. |
-| Test Backend | every pull request | The backend test suite. |
+| Test Backend | every pull request | The backend test suite, with a 90% coverage gate. |
 | Test Docker Compose | every pull request | The stack builds, migrates, seeds and answers requests. |
-| Test QA | changes under `qa/` | Ruff, mypy and the self tests of `qa/`, including a Chromium run. |
+| Test QA | changes under `qa/` | Ruff, mypy and the self tests of `qa/` with an 80% coverage gate, including a Chromium run. |
 | Zizmor | every pull request | Security audit of the workflows. |
 
 The `master` branch is protected by a ruleset: changes go through a pull request, and the checks `pre-commit-alls-green`, `test-backend`, `test-docker-compose` and `Run zizmor` must pass.

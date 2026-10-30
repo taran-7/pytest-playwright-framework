@@ -9,7 +9,7 @@ from app.core.security import get_password_hash, verify_password
 from app.crud import create_user
 from app.models import User, UserCreate
 from app.utils import generate_password_reset_token
-from tests.utils.user import user_authentication_headers
+from tests.utils.user import create_random_user, user_authentication_headers
 from tests.utils.utils import random_email, random_lower_string
 
 
@@ -189,3 +189,90 @@ def test_login_with_argon2_password_keeps_hash(client: TestClient, db: Session) 
 
     assert user.hashed_password == original_hash
     assert user.hashed_password.startswith("$argon2")
+
+
+def test_get_access_token_inactive_user(client: TestClient, db: Session) -> None:
+    email = random_email()
+    password = random_lower_string()
+    create_user(
+        session=db,
+        user_create=UserCreate(email=email, password=password, is_active=False),
+    )
+
+    r = client.post(
+        f"{settings.API_V1_STR}/login/access-token",
+        data={"username": email, "password": password},
+    )
+
+    assert r.status_code == 400
+    assert r.json()["detail"] == "Inactive user"
+
+
+def test_reset_password_unknown_user(client: TestClient) -> None:
+    token = generate_password_reset_token(email=random_email())
+
+    r = client.post(
+        f"{settings.API_V1_STR}/reset-password/",
+        json={"new_password": random_lower_string(), "token": token},
+    )
+
+    # Same answer as for a bad token, so that it does not reveal which users exist
+    assert r.status_code == 400
+    assert r.json()["detail"] == "Invalid token"
+
+
+def test_reset_password_inactive_user(client: TestClient, db: Session) -> None:
+    email = random_email()
+    create_user(
+        session=db,
+        user_create=UserCreate(
+            email=email, password=random_lower_string(), is_active=False
+        ),
+    )
+    token = generate_password_reset_token(email=email)
+
+    r = client.post(
+        f"{settings.API_V1_STR}/reset-password/",
+        json={"new_password": random_lower_string(), "token": token},
+    )
+
+    assert r.status_code == 400
+    assert r.json()["detail"] == "Inactive user"
+
+
+def test_recovery_password_html_content(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+
+    r = client.post(
+        f"{settings.API_V1_STR}/password-recovery-html-content/{user.email}",
+        headers=superuser_token_headers,
+    )
+
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/html")
+    assert user.email in r.headers["subject"]
+    assert f"{settings.FRONTEND_HOST}/reset-password?token=" in r.text
+
+
+def test_recovery_password_html_content_unknown_user(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
+    r = client.post(
+        f"{settings.API_V1_STR}/password-recovery-html-content/{random_email()}",
+        headers=superuser_token_headers,
+    )
+
+    assert r.status_code == 404
+
+
+def test_recovery_password_html_content_requires_superuser(
+    client: TestClient, normal_user_token_headers: dict[str, str]
+) -> None:
+    r = client.post(
+        f"{settings.API_V1_STR}/password-recovery-html-content/{random_email()}",
+        headers=normal_user_token_headers,
+    )
+
+    assert r.status_code == 403

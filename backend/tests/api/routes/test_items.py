@@ -3,8 +3,33 @@ import uuid
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
+from app import crud
 from app.core.config import settings
+from app.models import ItemCreate
 from tests.utils.item import create_random_item
+
+
+def test_read_items_as_normal_user_returns_only_own_items(
+    client: TestClient, normal_user_token_headers: dict[str, str], db: Session
+) -> None:
+    owner = crud.get_user_by_email(session=db, email=settings.EMAIL_TEST_USER)
+    assert owner is not None
+    own_item = crud.create_item(
+        session=db, item_in=ItemCreate(title="Own item"), owner_id=owner.id
+    )
+    someone_elses_item = create_random_item(db)
+
+    response = client.get(
+        f"{settings.API_V1_STR}/items/", headers=normal_user_token_headers
+    )
+
+    assert response.status_code == 200
+    content = response.json()
+    ids = {item["id"] for item in content["data"]}
+    assert str(own_item.id) in ids
+    assert str(someone_elses_item.id) not in ids
+    assert {item["owner_id"] for item in content["data"]} == {str(owner.id)}
+    assert content["count"] == len(content["data"])
 
 
 def test_create_item(

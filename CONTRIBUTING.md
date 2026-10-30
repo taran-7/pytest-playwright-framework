@@ -35,8 +35,10 @@ cd qa
 uv run ruff check .
 uv run ruff format --check .
 uv run mypy
-uv run pytest
+uv run pytest --cov
 ```
+
+New code needs tests. CI fails when the backend coverage drops below 90% or when the coverage of `qa/framework` drops below 80%. How to run the backend tests with coverage is described in [backend/README.md](./backend/README.md).
 
 ## Dependencies
 
